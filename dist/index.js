@@ -65746,23 +65746,16 @@ const { DefaultAzureCredential } = __nccwpck_require__(748);
 try {
   // `who-to-greet` input defined in action metadata file
   const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello1 ${nameToGreet}!`);
-  console.log(`Hello2 ${nameToGreet}!`);
-
-  console.log('-----------(-1)');
-    // Delay to ensure all logs are processed
+  console.log(`Hello ${nameToGreet}!`);
 
   const accountName = core.getInput('azure-storage-account-name');
   // process.env.AZURE_STORAGE_ACCOUNT_NAME;
-  console.log('----------- 0');
   if (!accountName) throw Error('Azure Storage accountName not found');
 
-//  console.log('----1');
-//
-//  const blobServiceClient = new BlobServiceClient(
-//    `https://${accountName}.blob.core.windows.net`,
-//    new DefaultAzureCredential()
-//  );
+  const blobServiceClient = new BlobServiceClient(
+    `https://${accountName}.blob.core.windows.net`,
+    new DefaultAzureCredential()
+  );
 //
 //  console.log('----2');
 //
