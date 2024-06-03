@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const { BlobServiceClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require('@azure/identity');
 
 try {
