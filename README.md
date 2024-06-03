@@ -31,3 +31,17 @@ release:
 ```shell
 ncc build index.js --license licenses.txt
 ```
+
+2. git commit push:
+
+3. git tag:
+
+```shell
+git tag -a -m "update" v1.12
+```
+
+4. push tag:
+
+```shell
+git push --follow-tags 
+```
