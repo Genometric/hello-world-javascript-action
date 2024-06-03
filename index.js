@@ -8,6 +8,7 @@ try {
   console.log(`Hello ${nameToGreet}!`);
 
   console.log('-----------(-1)');
+  process.stdout.write('Log messages flushed\n');
   const accountName = core.getInput('azure-storage-account-name');
   // process.env.AZURE_STORAGE_ACCOUNT_NAME;
   console.log('----------- 0');
