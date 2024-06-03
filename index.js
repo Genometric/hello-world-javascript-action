@@ -16,13 +16,11 @@ try {
     `https://${accountName}.blob.core.windows.net`,
     new DefaultAzureCredential()
   );
-//
-//  console.log('----2');
-//
-//  const containerName = core.getInput('azure-storage-container-name'); // 'quickstart';
-//  console.log('----3');
-//  const containerClient = blobServiceClient.getContainerClient(containerName);
-//  console.log('----4');
+
+  const containerName = core.getInput('azure-storage-container-name'); // 'quickstart';
+
+  const containerClient = blobServiceClient.getContainerClient(containerName);
+
 //
 //  // Create a unique name for the blob
 //  const blobName = 'quickstart.txt';
