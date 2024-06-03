@@ -5,7 +5,8 @@ const { DefaultAzureCredential } = require('@azure/identity');
 try {
   // `who-to-greet` input defined in action metadata file
   const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
+  console.log(`Hello1 ${nameToGreet}!`);
+  console.log(`Hello2 ${nameToGreet}!`);
 
   console.log('-----------(-1)');
     // Delay to ensure all logs are processed
