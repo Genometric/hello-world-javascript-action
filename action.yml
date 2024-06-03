@@ -8,6 +8,12 @@ inputs:
     description: 'Who to greet'
     required: true
     default: 'World'
+  azure-storage-account-name:
+    description: azure
+    required: true
+  azure-storage-container-name:
+    description: azure
+    required: true
 outputs:
   time: # id of output
     description: 'The time we greeted you'

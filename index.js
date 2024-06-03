@@ -7,14 +7,15 @@ try {
   const nameToGreet = core.getInput('who-to-greet');
   console.log(`Hello ${nameToGreet}!`);
 
-  const accountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+  const accountName = core.getInput('azure-storage-account-name');
+  // process.env.AZURE_STORAGE_ACCOUNT_NAME;
   if (!accountName) throw Error('Azure Storage accountName not found');
 
   const blobServiceClient = new BlobServiceClient(
     `https://${accountName}.blob.core.windows.net`,
     new DefaultAzureCredential()
   );
-  const containerName = 'quickstart';
+  const containerName = core.getInput('azure-storage-container-name'); // 'quickstart';
   const containerClient = blobServiceClient.getContainerClient(containerName);
 
   // Create a unique name for the blob
