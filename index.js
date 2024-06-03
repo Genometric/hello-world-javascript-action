@@ -7,8 +7,10 @@ try {
   const nameToGreet = core.getInput('who-to-greet');
   console.log(`Hello ${nameToGreet}!`);
 
+  console.log('-----------(-1)');
   const accountName = core.getInput('azure-storage-account-name');
   // process.env.AZURE_STORAGE_ACCOUNT_NAME;
+  console.log('----------- 0');
   if (!accountName) throw Error('Azure Storage accountName not found');
 
   console.log('----1');
