@@ -7,7 +7,6 @@ const { DefaultAzureCredential } = require('@azure/identity');
 async function uploadBlob() {
   try {
     const accountName = core.getInput('azure-storage-account-name');
-    // process.env.AZURE_STORAGE_ACCOUNT_NAME;
     if (!accountName) throw Error('Azure Storage accountName not found');
 
     const blobServiceClient = new BlobServiceClient(
@@ -15,14 +14,10 @@ async function uploadBlob() {
     new DefaultAzureCredential()
     );
 
-    const containerName = core.getInput('azure-storage-container-name'); // 'quickstart';
-
+    const containerName = core.getInput('azure-storage-container-name');
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    // Create a unique name for the blob
     const blobName = core.getInput('azure-storage-blob-name'); // 'quickstart.txt';
-
-    // Get a block blob client
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
     // Display blob name and url
