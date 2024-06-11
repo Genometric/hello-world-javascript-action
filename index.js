@@ -15,24 +15,23 @@ async function runWorkflowAsync() {
         `https://${accountName}.blob.core.windows.net`,
         new DefaultAzureCredential()
     );
-
     const containerName = core.getInput('azure-storage-container-name');
     const containerClient = blobServiceClient.getContainerClient(containerName);
-
     const triggerFileId = uuidv4();
     const blobName = `new/${triggerFileId}.json`;
     const failedBlobPrefix = `failed/${triggerFileId}`;
     const succeededBlobPrefix = `succeeded/${triggerFileId}`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
-    // Upload data to the blob
     const data = {
         "WorkflowUrl": core.getInput("workflow-path"),
         "WorkflowInputsUrl": core.getInput("workflow-inputs-path"),
         "WorkflowOptionsUrl": core.getInput("workflow-options-path"),
         "WorkflowDependenciesUrl": core.getInput("workflow-dependencies-path")
     };
+
     const jsonData = JSON.stringify(data);
+
     try {
         await blockBlobClient.upload(jsonData, jsonData.length);
         console.log(`Blob was uploaded successfully. URL: ${blockBlobClient.url}`);
@@ -41,29 +40,38 @@ async function runWorkflowAsync() {
         return;
     }
 
-    // Loop to check for success or failure indicators
-    while (true) {
+    let isDone = false;
+
+    // Loop until the workflow is done
+    while (!isDone) {
         try {
             for await (const blob of containerClient.listBlobsFlat({ prefix: succeededBlobPrefix })) {
                 if (blob.name.startsWith(succeededBlobPrefix)) {
                     console.log('Workflow succeeded.');
                     core.setOutput("status", "succeeded");
+                    isDone = true
                     break;
                 }
             }
 
+            if (isDone) break;
+
             for await (const blob of containerClient.listBlobsFlat({ prefix: failedBlobPrefix })) {
                 if (blob.name.startsWith(failedBlobPrefix)) {
                     core.setFailed('Workflow failed.');
+                    isDone = true;
                     break;
                 }
             }
+
+            if (isDone) break;
         } catch (error) {
             console.log(`Error occurred; will retry in 30s.  ${error.message}`);
         }
 
         await new Promise(resolve => setTimeout(resolve, 30000)); // wait 30 seconds before checking again
     }
+
 }
 
 async function run() {
