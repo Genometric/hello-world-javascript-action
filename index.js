@@ -17,10 +17,10 @@ async function runWorkflowAsync() {
     );
     const containerName = core.getInput('azure-storage-container-name');
     const containerClient = blobServiceClient.getContainerClient(containerName);
-    const triggerFileId = uuidv4();
-    const blobName = `new/${triggerFileId}.json`;
-    const failedBlobPrefix = `failed/${triggerFileId}`;
-    const succeededBlobPrefix = `succeeded/${triggerFileId}`;
+    const clientWorkflowId = uuidv4();
+    const blobName = `new/${clientWorkflowId}.json`;
+    const failedBlobPrefix = `failed/${clientWorkflowId}`;
+    const succeededBlobPrefix = `succeeded/${clientWorkflowId}`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
     const data = {
@@ -31,10 +31,11 @@ async function runWorkflowAsync() {
     };
 
     const jsonData = JSON.stringify(data);
+    const startTime = Date.now();
 
     try {
         await blockBlobClient.upload(jsonData, jsonData.length);
-        console.log(`Blob was uploaded successfully. URL: ${blockBlobClient.url}`);
+        console.log(`Trigger file created: ${blockBlobClient.url}`);
     } catch (error) {
         core.setFailed(`Error uploading blob: ${error.message}`);
         return;
@@ -45,23 +46,19 @@ async function runWorkflowAsync() {
     // Loop until the workflow is done
     while (!isDone) {
         try {
-            for await (const blob of containerClient.listBlobsFlat({ prefix: succeededBlobPrefix })) {
-                if (blob.name.startsWith(succeededBlobPrefix)) {
-                    console.log('Workflow succeeded.');
-                    core.setOutput("status", "succeeded");
-                    isDone = true
-                    break;
-                }
+            for await (const {} of containerClient.listBlobsFlat({ prefix: succeededBlobPrefix })) {
+                console.log('Workflow succeeded.');
+                core.setOutput("status", "succeeded");
+                isDone = true
+                break;
             }
 
             if (isDone) break;
 
-            for await (const blob of containerClient.listBlobsFlat({ prefix: failedBlobPrefix })) {
-                if (blob.name.startsWith(failedBlobPrefix)) {
-                    core.setFailed('Workflow failed.');
-                    isDone = true;
-                    break;
-                }
+            for await (const {} of containerClient.listBlobsFlat({ prefix: failedBlobPrefix })) {
+                core.setFailed('Workflow failed.');
+                isDone = true;
+                break;
             }
 
             if (isDone) break;
@@ -72,6 +69,13 @@ async function runWorkflowAsync() {
         await new Promise(resolve => setTimeout(resolve, 30000)); // wait 30 seconds before checking again
     }
 
+    const endTime = Date.now();
+    const duration = (endTime - startTime) / 1000; // Duration in seconds
+    const hours = Math.floor(duration / 3600); // Calculate hours
+    const minutes = Math.floor((duration % 3600) / 60); // Calculate minutes
+    const seconds = Math.floor(duration % 60); // Calculate seconds
+
+    console.log(`Workflow completed in ${hours}h ${minutes}m ${seconds}s`);
 }
 
 async function run() {
