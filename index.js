@@ -4,20 +4,20 @@ const { BlobServiceClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require('@azure/identity');
 
 
-async function uploadBlob() {
+async function createTriggerFile() {
   try {
     const accountName = core.getInput('azure-storage-account-name');
     if (!accountName) throw Error('Azure Storage accountName not found');
 
     const blobServiceClient = new BlobServiceClient(
     `https://${accountName}.blob.core.windows.net`,
-    new DefaultAzureCredential()
+    new AzureCliCredential()
     );
 
     const containerName = core.getInput('azure-storage-container-name');
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    const blobName = core.getInput('azure-storage-blob-name'); // 'quickstart.txt';
+    const blobName = core.getInput('azure-storage-blob-name');
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
     // Display blob name and url
@@ -26,8 +26,15 @@ async function uploadBlob() {
     );
 
     // Upload data to the blob
-    const data = 'Hello, World!';
-    const uploadBlobResponse = await blockBlobClient.upload(data, data.length);
+    const data = {
+        "WorkflowUrl": "aaa",
+        "WorkflowInputsUrl": "bbb",
+        "WorkflowOptionsUrl": null,
+        "WorkflowDependenciesUrl": "ccc"
+        };
+
+    const jsonData = JSON.stringify(data);
+    const uploadBlobResponse = await blockBlobClient.upload(jsonData, jsonData.length);
     console.log(
     `Blob was uploaded successfully. requestId: ${uploadBlobResponse.requestId}`
     );
@@ -41,7 +48,7 @@ try {
   const nameToGreet = core.getInput('who-to-greet');
   console.log(`Hello ${nameToGreet}!`);
 
-  uploadBlob();
+  createTriggerFile();
 
   const time = (new Date()).toTimeString();
   core.setOutput("time", time);
