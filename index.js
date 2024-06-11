@@ -11,7 +11,7 @@ async function createTriggerFile() {
 
     const blobServiceClient = new BlobServiceClient(
     `https://${accountName}.blob.core.windows.net`,
-    new AzureCliCredential()
+    new DefaultAzureCredential()
     );
 
     const containerName = core.getInput('azure-storage-container-name');
