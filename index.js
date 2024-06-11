@@ -60,11 +60,11 @@ async function createTriggerFile() {
         }
 
         if (successFound) {
-            console.log('Success blob found. Trigger file processing succeeded.');
+            console.log('Workflow succeeded.');
             core.setOutput("status", "succeeded");
             break;
         } else if (failureFound) {
-            core.setFailed('Failure blob found. Trigger file processing failed.');
+            core.setFailed('Workflow failed.');
             break;
         }
 
