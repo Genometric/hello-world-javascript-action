@@ -27,11 +27,11 @@ async function createTriggerFile() {
 
     // Upload data to the blob
     const data = {
-        "WorkflowUrl": "aaa",
-        "WorkflowInputsUrl": "bbb",
-        "WorkflowOptionsUrl": null,
-        "WorkflowDependenciesUrl": "ccc"
-        };
+      "WorkflowUrl": core.getInput("workflow-path"),
+      "WorkflowInputsUrl": core.getInput("workflow-inputs-path"),
+      "WorkflowOptionsUrl": core.getInput("workflow-options-path"),
+      "WorkflowDependenciesUrl": core.getInput("workflow-dependencies-path")
+    };
 
     const jsonData = JSON.stringify(data);
     const uploadBlobResponse = await blockBlobClient.upload(jsonData, jsonData.length);
@@ -44,10 +44,6 @@ async function createTriggerFile() {
 }
 
 try {
-  // `who-to-greet` input defined in action metadata file
-  const nameToGreet = core.getInput('who-to-greet');
-  console.log(`Hello ${nameToGreet}!`);
-
   createTriggerFile();
 
   const time = (new Date()).toTimeString();

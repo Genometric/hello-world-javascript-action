@@ -4,18 +4,27 @@ branding:
   icon: 'cloud'
   color: 'blue'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
-    required: true
-    default: 'World'
   azure-storage-account-name:
-    description: azure
+    description: todo
     required: true
   azure-storage-container-name:
-    description: azure
+    description: todo
     required: true
   azure-storage-blob-name:
-    description: azure
+    description: todo
+    required: true
+  workflow-path:
+    description: todo
+    required: true
+  workflow-inputs-path:
+    description: todo
+    required: true
+  workflow-options-path:
+    description: todo
+    required: false
+    default: null
+  workflow-dependencies-path:
+    description: todo
     required: true
 outputs:
   time: # id of output
