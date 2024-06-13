@@ -4,6 +4,10 @@ branding:
   icon: 'cloud'
   color: 'blue'
 inputs:
+  subcommand:
+    description: todo
+    required: false
+    default: synchronous
   azure-storage-account-name:
     description: todo
     required: true
