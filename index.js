@@ -1,6 +1,6 @@
 // dist/main.js
 const core = require('@actions/core');
-const submit = require('src/submit');
+const submit = require('./src/submit');
 
 async function run() {
   try {
