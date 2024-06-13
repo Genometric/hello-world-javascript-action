@@ -4,8 +4,7 @@ async function runWorkflowAsync(containerClient, clientWorkflowId) {
     const failedBlobPrefix = `failed/${clientWorkflowId}`;
     const succeededBlobPrefix = `succeeded/${clientWorkflowId}`;
 
-    // 30 seconds
-    const waitInterval = 30000;
+    const waitInterval = 30; // seconds
 
     let isDone = false;
     while (!isDone) {
@@ -27,10 +26,10 @@ async function runWorkflowAsync(containerClient, clientWorkflowId) {
 
             console.log(`The workflow is running, will recheck in ${waitInterval} seconds.`);
         } catch (error) {
-            console.log(`Error occurred; will retry in 30s.  ${error.message}`);
+            console.log(`Error occurred; will retry in ${waitInterval} seconds.  ${error.message}`);
         }
 
-        await new Promise(resolve => setTimeout(resolve, waitInterval));
+        await new Promise(resolve => setTimeout(resolve, waitInterval * 1000));
     }
 }
 
