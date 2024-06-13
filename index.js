@@ -28,6 +28,12 @@ async function run() {
         if (subcommand === 'synchronous') {
             const clientWorkflowId = await submit.run(containerClient);
             await monitor.run(containerClient, clientWorkflowId);
+        } else if (subcommand === 'submit') {
+            const clientWorkflowId = await submit.run(containerClient);
+            core.setOutput('workflowId', clientWorkflowId);
+        } else if (subcommand === 'monitor') {
+            const clientWorkflowId = core.getInput('workflow-id');
+            await monitor.run(containerClient, clientWorkflowId);
         } else {
             throw new Error(`Unknown subcommand: ${subcommand}`);
         }

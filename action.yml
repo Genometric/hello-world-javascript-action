@@ -30,6 +30,10 @@ inputs:
   workflow-dependencies-path:
     description: todo
     required: true
+  workflow-id:
+    description: tobe used only for the monitor task
+    required: false
+    default: null
 outputs:
   time: # id of output
     description: 'The time we greeted you'
