@@ -11,6 +11,8 @@ async function runWorkflowAsync() {
         return;
     }
 
+    console.log('test-----------test');
+
     const blobServiceClient = new BlobServiceClient(
         `https://${accountName}.blob.core.windows.net`,
         new DefaultAzureCredential()
