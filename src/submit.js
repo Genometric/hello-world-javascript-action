@@ -1,9 +1,9 @@
 const core = require('@actions/core');
 const { v4: uuidv4 } = require('uuid');
 
-async function runWorkflowAsync(containerClient) {
+async function runWorkflowAsync(containerClient, blobBaseName) {
     const clientWorkflowId = uuidv4();
-    const blobName = `new/${clientWorkflowId}.json`;
+    const blobName = `${blobBaseName}/${clientWorkflowId}.json`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
     const data = {
@@ -25,9 +25,9 @@ async function runWorkflowAsync(containerClient) {
     }
 }
 
-async function run(containerClient) {
+async function run(containerClient, blobBaseName) {
     try {
-        const clientWorkflowId = await runWorkflowAsync(containerClient);
+        const clientWorkflowId = await runWorkflowAsync(containerClient, blobBaseName);
         return clientWorkflowId;
     } catch (error) {
         core.setFailed(error.message);

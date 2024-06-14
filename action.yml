@@ -16,7 +16,8 @@ inputs:
     required: true
   azure-storage-blob-name:
     description: todo
-    required: true
+    required: false
+    default: 'new'
   workflow-path:
     description: todo
     required: true
