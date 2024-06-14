@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 
+// TODO: rename this method.
 async function runWorkflowAsync(containerClient, clientWorkflowId) {
     const failedBlobPrefix = `failed/${clientWorkflowId}`;
     const succeededBlobPrefix = `succeeded/${clientWorkflowId}`;

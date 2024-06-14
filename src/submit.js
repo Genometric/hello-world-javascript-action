@@ -1,16 +1,17 @@
 const core = require('@actions/core');
 const { v4: uuidv4 } = require('uuid');
 
-async function runWorkflowAsync(containerClient, blobBaseName) {
+// TODO: rename this method
+async function runWorkflowAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath) {
     const clientWorkflowId = uuidv4();
     const blobName = `${blobBaseName}/${clientWorkflowId}.json`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
 
     const data = {
-        "WorkflowUrl": core.getInput("workflow-path"),
-        "WorkflowInputsUrl": core.getInput("workflow-inputs-path"),
+        "WorkflowUrl": workflowPath,
+        "WorkflowInputsUrl": inputsPath,
         "WorkflowOptionsUrl": core.getInput("workflow-options-path"),
-        "WorkflowDependenciesUrl": core.getInput("workflow-dependencies-path")
+        "WorkflowDependenciesUrl": dependenciesPath
     };
     const jsonData = JSON.stringify(data);
 
@@ -25,9 +26,10 @@ async function runWorkflowAsync(containerClient, blobBaseName) {
     }
 }
 
-async function run(containerClient, blobBaseName) {
+async function run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath) {
     try {
-        const clientWorkflowId = await runWorkflowAsync(containerClient, blobBaseName);
+        const clientWorkflowId = await runWorkflowAsync(
+            containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
         return clientWorkflowId;
     } catch (error) {
         core.setFailed(error.message);
