@@ -102,3 +102,9 @@ node tests/test.js
 ```shell
 npm i -g @vercel/ncc
 ```
+
+## Install dependencies
+
+```shell
+npm install
+```

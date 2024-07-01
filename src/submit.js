@@ -9,7 +9,7 @@ async function submitWorkflowAsync(containerClient, blobBaseName, workflowPath, 
     const data = {
         "WorkflowUrl": workflowPath,
         "WorkflowInputsUrl": inputsPath,
-        "WorkflowOptionsUrl": core.getInput("workflow-options-path"),
+        "WorkflowOptionsUrl": core.getInput("workflow_options_path"),
         "WorkflowDependenciesUrl": dependenciesPath
     };
     const jsonData = JSON.stringify(data);

@@ -9,28 +9,53 @@ module.exports = {
     runCreateTask: submit.run
 };
 
-async function run() {
-    const accountName = core.getInput('azure_storage_account_name');
-    if (!accountName) {
-        core.setFailed('Azure Storage accountName not found');
-        return;
+const accountNameENV = 'azure_storage_account_name';
+const containerNameEnv = 'azure_storage_container_name';
+const blobBaseNameEnv = 'azure_storage_blob_name';
+const inputsContainerNameEnv = 'azure_storage_inputs_container_name';
+const workflowPathEnv = 'workflow_path';
+const inputsPathEnv = "workflow_inputs_path"
+const dependenciesPathEnv = "workflow_dependencies_path";
+const environmentVariables = [
+    accountNameENV,
+    containerNameEnv,
+    blobBaseNameEnv,
+    inputsContainerNameEnv,
+    workflowPathEnv,
+    inputsPathEnv,
+    dependenciesPathEnv
+];
+
+function assertEnvVarsDefined(vars) {
+    const undefinedVars = vars.filter(varName => !core.getInput(varName));
+
+    if (undefinedVars.length > 0) {
+        errorMessage = `The following environment variables are not defined: ${undefinedVars.join(', ')}`;
+        core.setFailed(errorMessage);
+        throw new Error(errorMessage);
     }
+}
+
+async function run() {
+    assertEnvVarsDefined(environmentVariables);
+
+    const accountName = core.getInput(accountNameENV);
 
     const blobServiceClient = new BlobServiceClient(
         `https://${accountName}.blob.core.windows.net`,
         new DefaultAzureCredential()
     );
 
-    const containerName = core.getInput('azure_storage_container_name');
+    const containerName = core.getInput(containerNameEnv);
     const containerClient = blobServiceClient.getContainerClient(containerName);
-    const blobBaseName = core.getInput('azure_storage_blob_name');
+    const blobBaseName = core.getInput(blobBaseNameEnv);
 
     try {
         const inputsContainerClient = blobServiceClient.getContainerClient(
-            core.getInput('azure_storage_inputs_container_name'));
-        const workflowPath = await upload.run(core.getInput("workflow_path"), inputsContainerClient);
-        const inputsPath = await upload.run(core.getInput("workflow_inputs_path"), inputsContainerClient);
-        const dependenciesPath = await upload.run(core.getInput("workflow_dependencies_path"), inputsContainerClient);
+            core.getInput(inputsContainerNameEnv));
+        const workflowPath = await upload.run(core.getInput(workflowPathEnv), inputsContainerClient);
+        const inputsPath = await upload.run(core.getInput(inputsPathEnv), inputsContainerClient);
+        const dependenciesPath = await upload.run(core.getInput(dependenciesPathEnv), inputsContainerClient);
 
         const subcommand = core.getInput('subcommand');
         if (subcommand === 'synchronous') {
@@ -40,7 +65,12 @@ async function run() {
             const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
             core.setOutput('workflowId', clientWorkflowId);
         } else if (subcommand === 'monitor') {
-            const clientWorkflowId = core.getInput('workflow_id');
+            const clientWorkflowId = core.getInput("workflow_id");
+            if (!clientWorkflowId) {
+                const msg = "workflow_id environment variable not defined.";
+                core.sefFailed(msg);
+                throw new Error(msg);
+            }
             await monitor.run(containerClient, clientWorkflowId);
         } else {
             throw new Error(`Unknown subcommand: ${subcommand}`);
