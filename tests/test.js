@@ -14,11 +14,12 @@ process.env['INPUT_WORKFLOW_DEPENDENCIES_PATH'] = './tests/data/dependencies.zip
 exec('node index.js', (error, stdout, stderr) => {
     if (error) {
         console.error('Error:', error);
-        return;
+        process.exit(1);
     }
     if (stderr) {
         console.error('stderr:', stderr);
-        return;
+        process.exit(1);
     }
     console.log('stdout:', stdout);
+    process.exit(0);
 });
