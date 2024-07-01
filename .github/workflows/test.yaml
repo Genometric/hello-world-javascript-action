@@ -1,0 +1,26 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  test_action:
+    runs-on: ubuntu-22.04
+    name: Test Action
+    #environment: Test
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      - name: Test Compile
+        run: |
+          ncc build index.js --license licenses.txt
