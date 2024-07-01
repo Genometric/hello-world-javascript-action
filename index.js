@@ -10,7 +10,7 @@ module.exports = {
 };
 
 async function run() {
-    const accountName = core.getInput('azure-storage-account-name');
+    const accountName = core.getInput('azure_storage_account_name');
     if (!accountName) {
         core.setFailed('Azure Storage accountName not found');
         return;
@@ -21,16 +21,16 @@ async function run() {
         new DefaultAzureCredential()
     );
 
-    const containerName = core.getInput('azure-storage-container-name');
+    const containerName = core.getInput('azure_storage_container_name');
     const containerClient = blobServiceClient.getContainerClient(containerName);
-    const blobBaseName = core.getInput('azure-storage-blob-name');
+    const blobBaseName = core.getInput('azure_storage_blob_name');
 
     try {
         const inputsContainerClient = blobServiceClient.getContainerClient(
-            core.getInput('azure-storage-inputs-container-name'));
-        const workflowPath = await upload.run(core.getInput("workflow-path"), inputsContainerClient);
-        const inputsPath = await upload.run(core.getInput("workflow-inputs-path"), inputsContainerClient);
-        const dependenciesPath = await upload.run(core.getInput("workflow-dependencies-path"), inputsContainerClient);
+            core.getInput('azure_storage_inputs_container_name'));
+        const workflowPath = await upload.run(core.getInput("workflow_path"), inputsContainerClient);
+        const inputsPath = await upload.run(core.getInput("workflow_inputs_path"), inputsContainerClient);
+        const dependenciesPath = await upload.run(core.getInput("workflow_dependencies_path"), inputsContainerClient);
 
         const subcommand = core.getInput('subcommand');
         if (subcommand === 'synchronous') {
@@ -40,7 +40,7 @@ async function run() {
             const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
             core.setOutput('workflowId', clientWorkflowId);
         } else if (subcommand === 'monitor') {
-            const clientWorkflowId = core.getInput('workflow-id');
+            const clientWorkflowId = core.getInput('workflow_id');
             await monitor.run(containerClient, clientWorkflowId);
         } else {
             throw new Error(`Unknown subcommand: ${subcommand}`);

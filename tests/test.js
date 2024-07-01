@@ -1,13 +1,13 @@
 const { exec } = require('child_process');
 
 process.env['INPUT_SUBCOMMAND'] = 'synchronous';
-//process.env['INPUT_AZURE-STORAGE-ACCOUNT-NAME'] = '...';
-//process.env['INPUT_AZURE-STORAGE-CONTAINER-NAME'] = '...';
-//process.env['INPUT_AZURE-STORAGE-INPUTS-CONTAINER-NAME'] = '...';
-//process.env['INPUT_AZURE-STORAGE-BLOB-NAME'] = '...';
-process.env['INPUT_WORKFLOW-PATH'] = './tests/data/HelloWorld.wdl';
-process.env['INPUT_WORKFLOW-INPUTS-PATH'] = './tests/data/HelloWorldInputs.json';
-process.env['INPUT_WORKFLOW-DEPENDENCIES-PATH'] = './tests/data/dependencies.zip';
+//process.env['INPUT_AZURE_STORAGE_ACCOUNT_NAME'] = '...';
+//process.env['INPUT_AZURE_STORAGE_CONTAINER_NAME'] = '...';
+//process.env['INPUT_AZURE_STORAGE_INPUTS_CONTAINER_NAME'] = '...';
+//process.env['INPUT_AZURE_STORAGE_BLOB_NAME'] = '...';
+process.env['INPUT_WORKFLOW_PATH'] = './tests/data/HelloWorld.wdl';
+process.env['INPUT_WORKFLOW_INPUTS_PATH'] = './tests/data/HelloWorldInputs.json';
+process.env['INPUT_WORKFLOW_DEPENDENCIES_PATH'] = './tests/data/dependencies.zip';
 
 
 //exec('node dist/index.js', (error, stdout, stderr) => {
