@@ -1,14 +1,14 @@
 {
-  "name": "github_action",
+  "name": "cromwell_automation",
   "version": "1.0.0",
-  "description": "",
+  "description": "Submits a provided test to Cromwell on Azure, monitors and reports its execution status, and provides the metadata of the submission in the JSON format.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["Cromwell", "Azure", "Automation", "Automated testing", "CI/CD"],
+  "author": "Broad Institute",
+  "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
