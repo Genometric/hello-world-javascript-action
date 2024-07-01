@@ -25,3 +25,6 @@ jobs:
         run: |
           npm i -g @vercel/ncc
           ncc build index.js --license licenses.txt
+      - name: Test Run
+        run: |
+          node tests/test.js
