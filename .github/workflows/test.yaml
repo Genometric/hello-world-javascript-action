@@ -23,4 +23,5 @@ jobs:
           node-version: '18.x'
       - name: Test Compile
         run: |
+          npm i -g @vercel/ncc
           ncc build index.js --license licenses.txt

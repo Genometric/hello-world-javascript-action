@@ -94,3 +94,11 @@ Having setup the environment, you may the following command to run the action on
 ```shell
 node tests/test.js
 ```
+
+# Compile
+
+## Install `ncc`
+
+```shell
+npm i -g @vercel/ncc
+```
