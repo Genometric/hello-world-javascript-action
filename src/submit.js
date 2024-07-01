@@ -1,8 +1,7 @@
 const core = require('@actions/core');
 const { v4: uuidv4 } = require('uuid');
 
-// TODO: rename this method
-async function runWorkflowAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath) {
+async function submitWorkflowAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath) {
     const clientWorkflowId = uuidv4();
     const blobName = `${blobBaseName}/${clientWorkflowId}.json`;
     const blockBlobClient = containerClient.getBlockBlobClient(blobName);
@@ -28,7 +27,7 @@ async function runWorkflowAsync(containerClient, blobBaseName, workflowPath, inp
 
 async function run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath) {
     try {
-        const clientWorkflowId = await runWorkflowAsync(
+        const clientWorkflowId = await submitWorkflowAsync(
             containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
         return clientWorkflowId;
     } catch (error) {
