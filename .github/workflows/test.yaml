@@ -21,6 +21,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '18.x'
+      - name: Install Dependencies
+        run: npm install
       - name: Test Compile
         run: |
           npm i -g @vercel/ncc
