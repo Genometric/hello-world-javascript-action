@@ -28,5 +28,10 @@ jobs:
           npm i -g @vercel/ncc
           ncc build index.js --license licenses.txt
       - name: Test Run
+        env:
+          INPUT_AZURE_STORAGE_ACCOUNT_NAME: ${{ vars.AZURE_STORAGE_ACCOUNT_NAME }}
+          INPUT_AZURE_STORAGE_CONTAINER_NAME: ${{ vars.AZURE_STORAGE_CONTAINER_NAME }}
+          INPUT_AZURE_STORAGE_INPUTS_CONTAINER_NAME: ${{ vars.AZURE_STORAGE_INPUTS_CONTAINER_NAME }}
+          INPUT_AZURE_STORAGE_BLOB_NAME: ${{ vars.AZURE_STORAGE_BLOB_NAME }}
         run: |
           node tests/test.js
