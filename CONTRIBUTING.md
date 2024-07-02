@@ -115,7 +115,7 @@ npm install
 1. Create a Github environment named `CoA`.
 2. Follow [this](https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended) 
    documentation to setup Azure Login secrets.
-3. Give the service principal the `Storage Blob Data Contributor` role. 
+3. Give the service principal the `Storage Blob Data Contributor`  role. 
 4. Define the following environment variables.
 
 ```shell
