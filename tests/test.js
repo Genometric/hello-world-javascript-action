@@ -1,5 +1,3 @@
-const path = require('path');
-
 const { exec } = require('child_process');
 
 process.env['INPUT_SUBCOMMAND'] = 'synchronous';
@@ -7,9 +5,9 @@ process.env['INPUT_SUBCOMMAND'] = 'synchronous';
 //process.env['INPUT_AZURE_STORAGE_CONTAINER_NAME'] = '...';
 //process.env['INPUT_AZURE_STORAGE_INPUTS_CONTAINER_NAME'] = '...';
 //process.env['INPUT_AZURE_STORAGE_BLOB_NAME'] = '...';
-process.env['INPUT_WORKFLOW_PATH'] = path.resolve('./tests/data/HelloWorld.wdl');
-process.env['INPUT_WORKFLOW_INPUTS_PATH'] = path.resolve('./tests/data/HelloWorldInputs.json');
-process.env['INPUT_WORKFLOW_DEPENDENCIES_PATH'] = path.resolve('./tests/data/Dependencies.zip');
+process.env['INPUT_WORKFLOW_PATH'] = './tests/data/HelloWorld.wdl';
+process.env['INPUT_WORKFLOW_INPUTS_PATH'] = './tests/data/HelloWorldInputs.json';
+process.env['INPUT_WORKFLOW_DEPENDENCIES_PATH'] = './tests/data/Dependencies.zip';
 
 
 //exec('node dist/index.js', (error, stdout, stderr) => {
