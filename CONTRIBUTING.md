@@ -108,3 +108,16 @@ npm i -g @vercel/ncc
 ```shell
 npm install
 ```
+
+
+# Set up CI/CD on your own fork
+
+1. Create a Github environment named `CoA`.
+2. Define the following environment variables.
+
+```shell
+AZURE_STORAGE_ACCOUNT_NAME
+AZURE_STORAGE_CONTAINER_NAME
+AZURE_STORAGE_INPUTS_CONTAINER_NAME
+AZURE_STORAGE_BLOB_NAME
+```
