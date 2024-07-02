@@ -55,4 +55,8 @@ jobs:
           INPUT_AZURE_STORAGE_INPUTS_CONTAINER_NAME: ${{ vars.AZURE_STORAGE_INPUTS_CONTAINER_NAME }}
           INPUT_AZURE_STORAGE_BLOB_NAME: ${{ vars.AZURE_STORAGE_BLOB_NAME }}
         run: |
+          pwd
+          echo "------"
+          ls -lha
+          echo "-----"
           node tests/test.js

@@ -40,20 +40,15 @@ async function run() {
     assertEnvVarsDefined(environmentVariables);
 
     const accountName = core.getInput(accountNameENV);
-    console.log("---1");
 
     const blobServiceClient = new BlobServiceClient(
         `https://${accountName}.blob.core.windows.net`,
         new DefaultAzureCredential()
     );
-    console.log("---2");
 
     const containerName = core.getInput(containerNameEnv);
-    console.log("---3");
     const containerClient = blobServiceClient.getContainerClient(containerName);
-    console.log("---4");
     const blobBaseName = core.getInput(blobBaseNameEnv);
-    console.log("---5");
 
     try {
         const inputsContainerClient = blobServiceClient.getContainerClient(
@@ -62,24 +57,24 @@ async function run() {
         const inputsPath = await upload.run(core.getInput(inputsPathEnv), inputsContainerClient);
         const dependenciesPath = await upload.run(core.getInput(dependenciesPathEnv), inputsContainerClient);
 
-//        const subcommand = core.getInput('subcommand');
-//        if (subcommand === 'synchronous') {
-//            const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
-//            await monitor.run(containerClient, clientWorkflowId);
-//        } else if (subcommand === 'submit') {
-//            const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
-//            core.setOutput('workflowId', clientWorkflowId);
-//        } else if (subcommand === 'monitor') {
-//            const clientWorkflowId = core.getInput("workflow_id");
-//            if (!clientWorkflowId) {
-//                const msg = "workflow_id environment variable not defined.";
-//                core.sefFailed(msg);
-//                throw new Error(msg);
-//            }
-//            await monitor.run(containerClient, clientWorkflowId);
-//        } else {
-//            throw new Error(`Unknown subcommand: ${subcommand}`);
-//        }
+        const subcommand = core.getInput('subcommand');
+        if (subcommand === 'synchronous') {
+            const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
+            await monitor.run(containerClient, clientWorkflowId);
+        } else if (subcommand === 'submit') {
+            const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
+            core.setOutput('workflowId', clientWorkflowId);
+        } else if (subcommand === 'monitor') {
+            const clientWorkflowId = core.getInput("workflow_id");
+            if (!clientWorkflowId) {
+                const msg = "workflow_id environment variable not defined.";
+                core.sefFailed(msg);
+                throw new Error(msg);
+            }
+            await monitor.run(containerClient, clientWorkflowId);
+        } else {
+            throw new Error(`Unknown subcommand: ${subcommand}`);
+        }
     } catch (error) {
         console.error('Error in main script:', error);
         core.setFailed(error.message);
