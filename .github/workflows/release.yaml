@@ -39,8 +39,8 @@ jobs:
             SHA=$(echo "$GITHUB_CONTEXT" | jq '.event.commits[].id' | tail -2 | head -1 | sed 's/\"//g')
           fi
           
-          DATE=$(git show -s --format=%ad --date=format:'%Y-%m-%d' $SHA)
-          TAG=dev-$DATE-${SHA::8}
+          DATE=$(git show -s --format=%ad --date=format:'%Y%m%d' $SHA)
+          TAG=dev-$DATE-${SHA::7}
           
           echo "SHA: $SHA"
           echo "TAG: $TAG"
@@ -59,7 +59,7 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -C $BRANCH
           git add --force dist/*
-          git commit -m "Add compiled js file [triggered by ${{ steps.release_tag.outputs.SHA }}]."
+          git commit -m "Add compiled js file [Invoker ${{ steps.release_tag.outputs.SHA }}]."
           git tag -a -m ${{ steps.release_tag.outputs.TAG }} ${{ steps.release_tag.outputs.TAG }}
           git push --set-upstream origin $BRANCH --force --follow-tags
 #
