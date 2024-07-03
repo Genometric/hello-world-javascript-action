@@ -58,7 +58,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git checkout -B $BRANCH
-          git add dist/*
+          git add --force dist/*
           git commit -m "Add compiled js file [triggered by ${{ steps.release_tag.outputs.SHA }}]."
           git push origin $BRANCH
           git tag -a -m ${{ steps.release_tag.outputs.TAG }} ${{ steps.release_tag.outputs.TAG }}
