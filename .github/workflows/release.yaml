@@ -50,27 +50,30 @@ jobs:
       #        env:
       #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
-      - name: Test release
-        id: test_release
+      - name: Commit Dist Files
+        id: commit_dist_files
         run: |
+          BRANCH="dev-nightly-release"
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -b dev-nightly
+          git checkout -b $BRANCH
           git add .
           git commit -m "generated"
-          git push origin dev-nightly
-
-      - name: Release
-        id: release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          REPO=$(echo "$GITHUB_CONTEXT" | jq -r '.repository')
-          TAG=${{ steps.release_tag.outputs.TAG }}
-          SHA=${{ steps.release_tag.outputs.SHA }}
-          
-          # git tag -a ${{ steps.release_tag.outputs.TAG }}
-          # git push --follow-tags
-          
-          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
-          # gh release create ${{ steps.release_tag.outputs.TAG }} --repo "$REPO" --title "some title" --generate-notes
+          git push origin $BRANCH
+          git tag -a -m ${{ steps.release_tag.outputs.TAG }} ${{ steps.release_tag.outputs.TAG }}
+          git push --follow-tags
+#
+#      - name: Release
+#        id: release
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        run: |
+#          REPO=$(echo "$GITHUB_CONTEXT" | jq -r '.repository')
+#          TAG=${{ steps.release_tag.outputs.TAG }}
+#          SHA=${{ steps.release_tag.outputs.SHA }}
+#
+#          # git tag -a ${{ steps.release_tag.outputs.TAG }}
+#          # git push --follow-tags
+#
+#          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
+#          # gh release create ${{ steps.release_tag.outputs.TAG }} --repo "$REPO" --title "some title" --generate-notes
