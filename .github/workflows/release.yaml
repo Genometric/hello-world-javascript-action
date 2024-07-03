@@ -1,0 +1,38 @@
+name: Release
+
+#on:
+#  workflow_call:
+#    inputs:
+#      tag:
+#        required: true
+#        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    name: Compile
+    env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      - name: Compose Image Tag
+        id: image_tag
+        run: |
+          if [[ ${{ github.event_name }} == "pull_request" ]]; then
+            HEAD_SHA=${{ github.event.pull_request.head.sha }}
+          else
+            HEAD_SHA=$(echo "$GITHUB_CONTEXT" | jq '.event.commits[].id' | tail -2 | head -1 | sed 's/\"//g')
+          fi
+          
+          echo "::debug::HEAD_SHA: $HEAD_SHA"
+          
+          DATE=$(git show -s --format=%ad --date=format:'%Y-%m-%d' $COMMIT_SHA)
+          
+          TAG=dev-$DATE-${COMMIT_SHA::8}
+          
+          echo "::debug::TAG: TAG"
+          echo "TAG=$TAG" >> $GITHUB_OUTPUT
