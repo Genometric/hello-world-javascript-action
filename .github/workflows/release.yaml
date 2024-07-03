@@ -82,7 +82,7 @@ jobs:
           git push --set-upstream origin $BRANCH --force --follow-tags
 
       - name: Release
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/main'
         id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
