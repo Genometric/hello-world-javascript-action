@@ -39,6 +39,11 @@ jobs:
           echo "SHA: $SHA"
           echo "TAG: $TAG"
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
+      - name: login
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+
       - name: Release
         id: release
         env:
