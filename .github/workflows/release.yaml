@@ -44,6 +44,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          REPO=$(echo "$GITHUB_CONTEXT" | jq '.repository')
+          REPO=$(echo "$GITHUB_CONTEXT" | jq -r '.repository')
           echo "$REPO"
           gh release create ${{ steps.release_tag.outputs.TAG }} --repo "$REPO" --title "some title" --generate-notes
