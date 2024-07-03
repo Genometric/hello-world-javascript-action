@@ -55,7 +55,7 @@ jobs:
           REPO=$(echo "$GITHUB_CONTEXT" | jq -r '.repository')
           LATEST_RELEASE=$(jq -r '.[0] | .tag_name' <<< $(curl --silent https://api.github.com/repos/$REPO/releases))
           if [ -n "$LATEST_RELEASE" ]; then
-            # if latest release tag is v0.1, this extracts the `1` from it.
+            # if latest release tag is v0.1, this extracts the `1` from it then increments it.
             VER="${LATEST_RELEASE#*.}"
             VER=$((VER + 1))
           else
@@ -88,6 +88,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG=${{ steps.tags.outputs.RELEASE_TAG }}
+          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
+          gh release create $TAG --repo "$REPO" --title "Release $TAG" --generate-notes
 #          TAG=${{ steps.release_tag.outputs.TAG }}
 #          SHA=
 #
@@ -95,5 +97,3 @@ jobs:
 #          # git push --follow-tags
 #
 
-          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
-          gh release create $TAG --repo "$REPO" --title "Release $TAG" --generate-notes
