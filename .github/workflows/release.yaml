@@ -15,7 +15,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-22.04
-    name: Nightly Release
+    name: Release an Updated Version
     env:
       GITHUB_CONTEXT: ${{ toJson(github) }}
     steps:
