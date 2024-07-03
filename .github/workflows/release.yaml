@@ -57,13 +57,11 @@ jobs:
           BRANCH="dev-nightly-release"
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git checkout -B $BRANCH
+          git switch -C $BRANCH
           git add --force dist/*
           git commit -m "Add compiled js file [triggered by ${{ steps.release_tag.outputs.SHA }}]."
-          git pull origin $BRANCH --ff-only
-          git push origin $BRANCH
           git tag -a -m ${{ steps.release_tag.outputs.TAG }} ${{ steps.release_tag.outputs.TAG }}
-          git push --follow-tags
+          git push --set-upstream origin $BRANCH --force --follow-tags
 #
 #      - name: Release
 #        id: release
