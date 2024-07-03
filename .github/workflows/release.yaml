@@ -57,10 +57,10 @@ jobs:
           BRANCH="dev-nightly-release"
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git pull $BRANCH
           git checkout -B $BRANCH
-          git add .
-          git commit -m "generated"
+          git pull $BRANCH
+          git add dist/*
+          git commit -m "Add compiled js file."
           git push origin $BRANCH
           git tag -a -m ${{ steps.release_tag.outputs.TAG }} ${{ steps.release_tag.outputs.TAG }}
           git push --follow-tags
