@@ -40,22 +40,22 @@ jobs:
           echo "TAG: $TAG"
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
           echo "SHA=$SHA" >> $GITHUB_OUTPUT
-#      - name: login
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
+      - name: login
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Release
         id: release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        env:
+#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REPO=$(echo "$GITHUB_CONTEXT" | jq -r '.repository')
           TAG=${{ steps.release_tag.outputs.TAG }}
           SHA=${{ steps.release_tag.outputs.SHA }}
           
-          # git tag -a ${{ steps.release_tag.outputs.TAG }}
-          # git push --follow-tags
+          git tag -a ${{ steps.release_tag.outputs.TAG }}
+          git push --follow-tags
           
-          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
+#          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
           # gh release create ${{ steps.release_tag.outputs.TAG }} --repo "$REPO" --title "some title" --generate-notes
