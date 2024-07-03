@@ -42,11 +42,12 @@ jobs:
       - name: Compose Release Tag
         id: tags
         run: |
-          if [[ ${{ github.event_name }} == "pull_request" ]]; then
-            SHA=${{ github.event.pull_request.head.sha }}
-          else
-            SHA=$(echo "$GITHUB_CONTEXT" | jq '.event.commits[].id' | tail -2 | head -1 | sed 's/\"//g')
-          fi
+          #if [[ ${{ github.event_name }} == "pull_request" ]]; then
+          #  SHA=${{ github.event.pull_request.head.sha }}
+          #else
+          #  SHA=$(echo "$GITHUB_CONTEXT" | jq '.event.commits[].id' | tail -2 | head -1 | sed 's/\"//g')
+          #fi
+          SHA=${{ github.sha }}
           
           DATE=$(git show -s --format=%ad --date=format:'%Y%m%d' $SHA)
           DEV_TAG=dev-$DATE-${SHA::7}
