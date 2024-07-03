@@ -30,6 +30,10 @@ jobs:
         run: |
           npm i -g @vercel/ncc
           ncc build index.js --license licenses.txt
+      - name: Configure git
+        - run : |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
       - name: Compose Release Tag
         id: release_tag
         run: |
@@ -47,16 +51,10 @@ jobs:
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
           echo "SHA=$SHA" >> $GITHUB_OUTPUT
 
-      #      - name: login
-      #        env:
-      #          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #        run: gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
       - name: Commit Dist Files
         id: commit_dist_files
         run: |
           BRANCH="dev-nightly-release"
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
           git switch -C $BRANCH
           git add --force dist/*
           git commit -m "Add compiled js file [Invoker ${{ steps.release_tag.outputs.SHA }}]."
