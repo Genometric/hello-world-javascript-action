@@ -40,5 +40,6 @@ jobs:
           TAG=dev-$DATE-${SHA::8}
           
           echo "sha: $COMMIT_SHA"
-          echo "TAG: TAG"
+          echo "SHA: $SHA"
+          echo "TAG: $TAG"
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
