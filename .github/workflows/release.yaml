@@ -44,4 +44,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "$GITHUB_CONTEXT" | jq '.repository'"
+          repo=$(echo "$GITHUB_CONTEXT" | jq '.repository')
+          echo $repo
