@@ -33,13 +33,15 @@ jobs:
             SHA=$(echo "$GITHUB_CONTEXT" | jq '.event.commits[].id' | tail -2 | head -1 | sed 's/\"//g')
           fi
           
-          echo "::debug::HEAD_SHA: $HEAD_SHA"
-          
           DATE=$(git show -s --format=%ad --date=format:'%Y-%m-%d' $SHA)
-          
           TAG=dev-$DATE-${SHA::8}
           
-          echo "sha: $COMMIT_SHA"
           echo "SHA: $SHA"
           echo "TAG: $TAG"
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
+      - name: Release
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GITHUB_CONTEXT" | jq '.repository'"
