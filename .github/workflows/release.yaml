@@ -60,7 +60,7 @@ jobs:
           git checkout -B $BRANCH
           git add --force dist/*
           git commit -m "Add compiled js file [triggered by ${{ steps.release_tag.outputs.SHA }}]."
-          git pull
+          git pull origin $BRANCH
           git push origin $BRANCH
           git tag -a -m ${{ steps.release_tag.outputs.TAG }} ${{ steps.release_tag.outputs.TAG }}
           git push --follow-tags
