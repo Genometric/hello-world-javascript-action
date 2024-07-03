@@ -21,20 +21,24 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '18.x'
+
       - name: Install Dependencies
         run: npm install
+
       - name: Compile
         run: |
           npm i -g @vercel/ncc
           ncc build index.js --license licenses.txt
+
       - name: Configure git
-        - id: config_git
-        - run : |
+        run : |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
+
       - name: Compose Release Tag
         id: release_tag
         run: |
@@ -51,6 +55,7 @@ jobs:
           echo "TAG: $TAG"
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
           echo "SHA=$SHA" >> $GITHUB_OUTPUT
+
       - name: Commit Dist Files
         id: commit_dist_files
         run: |
