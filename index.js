@@ -36,7 +36,7 @@ function assertEnvVarsDefined(vars) {
     }
 }
 
-async function run() {
+async function runAsync() {
     assertEnvVarsDefined(environmentVariables);
 
     const accountName = core.getInput(accountNameENV);
@@ -53,16 +53,16 @@ async function run() {
     try {
         const inputsContainerClient = blobServiceClient.getContainerClient(
             core.getInput(inputsContainerNameEnv));
-        const workflowPath = await upload.run(core.getInput(workflowPathEnv), inputsContainerClient);
-        const inputsPath = await upload.run(core.getInput(inputsPathEnv), inputsContainerClient);
-        const dependenciesPath = await upload.run(core.getInput(dependenciesPathEnv), inputsContainerClient);
+        const workflowPath = await upload.runAsync(core.getInput(workflowPathEnv), inputsContainerClient);
+        const inputsPath = await upload.runAsync(core.getInput(inputsPathEnv), inputsContainerClient);
+        const dependenciesPath = await upload.runAsync(core.getInput(dependenciesPathEnv), inputsContainerClient);
 
         const subcommand = core.getInput('subcommand');
         if (subcommand === 'synchronous') {
-            const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
-            await monitor.run(containerClient, clientWorkflowId);
+            const clientWorkflowId = await submit.runAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
+            await monitor.runAsync(containerClient, clientWorkflowId);
         } else if (subcommand === 'submit') {
-            const clientWorkflowId = await submit.run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
+            const clientWorkflowId = await submit.runAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
             core.setOutput('workflowId', clientWorkflowId);
         } else if (subcommand === 'monitor') {
             const clientWorkflowId = core.getInput("workflow_id");
@@ -71,7 +71,7 @@ async function run() {
                 core.sefFailed(msg);
                 throw new Error(msg);
             }
-            await monitor.run(containerClient, clientWorkflowId);
+            await monitor.runAsync(containerClient, clientWorkflowId);
         } else {
             throw new Error(`Unknown subcommand: ${subcommand}`);
         }
@@ -81,4 +81,4 @@ async function run() {
     }
 }
 
-run();
+runAsync();

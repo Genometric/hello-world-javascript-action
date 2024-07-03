@@ -23,7 +23,7 @@ async function downloadFromBlobAsync(localFilename, blobName, containerClient) {
     }
 }
 
-async function run(localFilename, blobName, containerClient) {
+async function runAsync(localFilename, blobName, containerClient) {
     try {
         await downloadFromBlobAsync(localFilename, blobName, containerClient);
     } catch (error) {
@@ -32,4 +32,4 @@ async function run(localFilename, blobName, containerClient) {
     }
 };
 
-exports.run = run;
+exports.runAsync = runAsync;

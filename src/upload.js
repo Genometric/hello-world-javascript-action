@@ -17,7 +17,7 @@ async function uploadToBlobAsync(localFilename, containerClient) {
     }
 }
 
-async function run(localFilename, containerClient) {
+async function runAsync(localFilename, containerClient) {
     try {
         const blobUrl = await uploadToBlobAsync(localFilename, containerClient);
         return blobUrl;
@@ -27,4 +27,4 @@ async function run(localFilename, containerClient) {
     }
 };
 
-exports.run = run;
+exports.runAsync = runAsync;

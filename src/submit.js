@@ -25,7 +25,7 @@ async function submitWorkflowAsync(containerClient, blobBaseName, workflowPath, 
     }
 }
 
-async function run(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath) {
+async function runAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath) {
     try {
         const clientWorkflowId = await submitWorkflowAsync(
             containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
@@ -36,4 +36,4 @@ async function run(containerClient, blobBaseName, workflowPath, inputsPath, depe
     }
 };
 
-exports.run = run;
+exports.runAsync = runAsync;

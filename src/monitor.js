@@ -34,7 +34,7 @@ async function runWorkflowAsync(containerClient, clientWorkflowId) {
     }
 }
 
-async function run(containerClient, clientWorkflowId) {
+async function runAsync(containerClient, clientWorkflowId) {
     try {
         await runWorkflowAsync(containerClient, clientWorkflowId);
     } catch (error) {
@@ -43,4 +43,4 @@ async function run(containerClient, clientWorkflowId) {
     }
 };
 
-exports.run = run;
+exports.runAsync = runAsync;
