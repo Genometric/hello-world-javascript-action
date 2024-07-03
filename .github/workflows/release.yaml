@@ -88,8 +88,8 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG=${{ steps.tags.outputs.RELEASE_TAG }}
-          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
-#          gh release create $TAG --repo "$REPO" --title "Release $TAG" --generate-notes
+          # gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
+          gh release create $TAG --repo "$REPO" --title "Release $TAG" --generate-notes
 #          TAG=${{ steps.release_tag.outputs.TAG }}
 #          SHA=
 #
