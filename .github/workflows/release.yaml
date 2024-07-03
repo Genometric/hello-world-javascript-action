@@ -24,8 +24,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '18.x'
-      - name: Compose Image Tag
-        id: image_tag
+      - name: Compose Release Tag
+        id: release_tag
         run: |
           if [[ ${{ github.event_name }} == "pull_request" ]]; then
             SHA=${{ github.event.pull_request.head.sha }}
@@ -44,5 +44,5 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          repo=$(echo "$GITHUB_CONTEXT" | jq '.repository')
-          echo $repo
+          REPO=$(echo "$GITHUB_CONTEXT" | jq '.repository')
+          gh release create ${{ steps.release_tag.outputs.TAG }} --repo $REPO --title "some title" --generate-notes
