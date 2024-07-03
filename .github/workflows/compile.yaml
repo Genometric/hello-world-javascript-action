@@ -1,7 +1,8 @@
 name: Compile Test
 
 on:
-  workflow_calls:
+  workflow_call:
+
   push:
     branches:
       - main
