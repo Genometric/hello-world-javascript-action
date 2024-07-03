@@ -13,8 +13,11 @@ on:
 #        type: string
 
 jobs:
-  release:
+  build:
     uses: ./.github/workflows/compile.yaml
+
+  release:
+    runs-on: ubuntu-22.04
     env:
       GITHUB_CONTEXT: ${{ toJson(github) }}
     steps:
