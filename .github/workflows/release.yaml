@@ -40,7 +40,7 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Compose Release Tag
-        id: release_tag
+        id: tags
         run: |
           if [[ ${{ github.event_name }} == "pull_request" ]]; then
             SHA=${{ github.event.pull_request.head.sha }}
@@ -49,34 +49,51 @@ jobs:
           fi
           
           DATE=$(git show -s --format=%ad --date=format:'%Y%m%d' $SHA)
-          TAG=dev-$DATE-${SHA::7}
+          DEV_TAG=dev-$DATE-${SHA::7}
+          
+          BASE_RELEASE_TAG="v0."
+          REPO=$(echo "$GITHUB_CONTEXT" | jq -r '.repository')
+          LATEST_RELEASE=$(jq -r '.[0] | .tag_name' <<< $(curl --silent https://api.github.com/repos/$REPO/releases))
+          if [ -n "$LATEST_RELEASE" ]; then
+            # if latest release tag is v0.1, this extracts the `1` from it.
+            VER="${LATEST_RELEASE#*.}"
+            VER=$((VER + 1))
+          else
+            VER="1"
+          fi
+          
+          RELEASE_TAG=v0.$VER
           
           echo "SHA: $SHA"
-          echo "TAG: $TAG"
-          echo "TAG=$TAG" >> $GITHUB_OUTPUT
+          echo "DEV_TAG: $DEV_TAG"
+          echo "RELEASE_TAG: $RELEASE_TAG"
           echo "SHA=$SHA" >> $GITHUB_OUTPUT
+          echo "DEV_TAG=$DEV_TAG" >> $GITHUB_OUTPUT
+          echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Commit Dist Files
-        id: commit_dist_files
+      - name: Publish Dev Tag
+        if: github.ref == 'refs/heads/dev'
         run: |
           BRANCH="dev-nightly-release"
           git switch -C $BRANCH
           git add --force dist/*
-          git commit -m "Add compiled js file [Invoker ${{ steps.release_tag.outputs.SHA }}]."
-          git tag -a -m ${{ steps.release_tag.outputs.TAG }} ${{ steps.release_tag.outputs.TAG }}
+          git commit -m "Add compiled js file [Invoker ${{ steps.tags.outputs.SHA }}]."
+          git tag -a -m ${{ steps.tags.outputs.DEV_TAG }} ${{ steps.tags.outputs.DEV_TAG }}
           git push --set-upstream origin $BRANCH --force --follow-tags
-#
-#      - name: Release
-#        id: release
-#        env:
-#          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        run: |
-#          REPO=$(echo "$GITHUB_CONTEXT" | jq -r '.repository')
+
+      - name: Release
+        if: github.ref == 'refs/heads/dev'
+        id: release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG=${{ steps.tags.outputs.RELEASE_TAG }}
 #          TAG=${{ steps.release_tag.outputs.TAG }}
 #          SHA=
 #
 #          # git tag -a ${{ steps.release_tag.outputs.TAG }}
 #          # git push --follow-tags
 #
-#          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
-#          # gh release create ${{ steps.release_tag.outputs.TAG }} --repo "$REPO" --title "some title" --generate-notes
+
+          gh api repos/$REPO/git/refs -f ref="refs/tags/$TAG" -f sha="$SHA"
+          gh release create $TAG --repo "$REPO" --title "Release $TAG" --generate-notes
