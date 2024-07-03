@@ -15,7 +15,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-22.04
-    name: Compile
+    name: Release
     env:
       GITHUB_CONTEXT: ${{ toJson(github) }}
     steps:
@@ -28,16 +28,17 @@ jobs:
         id: image_tag
         run: |
           if [[ ${{ github.event_name }} == "pull_request" ]]; then
-            HEAD_SHA=${{ github.event.pull_request.head.sha }}
+            SHA=${{ github.event.pull_request.head.sha }}
           else
-            HEAD_SHA=$(echo "$GITHUB_CONTEXT" | jq '.event.commits[].id' | tail -2 | head -1 | sed 's/\"//g')
+            SHA=$(echo "$GITHUB_CONTEXT" | jq '.event.commits[].id' | tail -2 | head -1 | sed 's/\"//g')
           fi
           
           echo "::debug::HEAD_SHA: $HEAD_SHA"
           
-          DATE=$(git show -s --format=%ad --date=format:'%Y-%m-%d' $COMMIT_SHA)
+          DATE=$(git show -s --format=%ad --date=format:'%Y-%m-%d' $SHA)
           
-          TAG=dev-$DATE-${COMMIT_SHA::8}
+          TAG=dev-$DATE-${SHA::8}
           
+          echo "::sha: $COMMIT_SHA"
           echo "::debug::TAG: TAG"
           echo "TAG=$TAG" >> $GITHUB_OUTPUT
