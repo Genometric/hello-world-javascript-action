@@ -2,6 +2,7 @@ const core = require('@actions/core');
 const submit = require('./src/submit');
 const monitor = require('./src/monitor');
 const upload = require('./src/upload');
+const metadata = require('./src/metadata');
 const { BlobServiceClient } = require("@azure/storage-blob");
 const { DefaultAzureCredential } = require('@azure/identity');
 
@@ -16,7 +17,8 @@ const inputsContainerNameEnv = 'azure_storage_inputs_container_name';
 const workflowPathEnv = 'workflow_path';
 const inputsPathEnv = "workflow_inputs_path"
 const dependenciesPathEnv = "workflow_dependencies_path";
-const environmentVariables = [
+const metadataContainerNameEnv = 'azure_storage_metadata_container_name';
+const requiredEnvironmentVariables = [
     accountNameENV,
     containerNameEnv,
     blobBaseNameEnv,
@@ -37,7 +39,7 @@ function assertEnvVarsDefined(vars) {
 }
 
 async function runAsync() {
-    assertEnvVarsDefined(environmentVariables);
+    assertEnvVarsDefined(requiredEnvironmentVariables);
 
     const accountName = core.getInput(accountNameENV);
 
@@ -50,6 +52,9 @@ async function runAsync() {
     const containerClient = blobServiceClient.getContainerClient(containerName);
     const blobBaseName = core.getInput(blobBaseNameEnv);
 
+    const metadataContainerName = core.getInput(metadataContainerNameEnv);
+    const metadataContainerClient = blobServiceClient.getContainerClient(metadataContainerName);
+
     try {
         const inputsContainerClient = blobServiceClient.getContainerClient(
             core.getInput(inputsContainerNameEnv));
@@ -61,6 +66,7 @@ async function runAsync() {
         if (subcommand === 'synchronous') {
             const clientWorkflowId = await submit.runAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
             await monitor.runAsync(containerClient, clientWorkflowId);
+            await metadata.downloadAsync(clientWorkflowId + ".json", clientWorkflowId, metadataContainerClient);
         } else if (subcommand === 'submit') {
             const clientWorkflowId = await submit.runAsync(containerClient, blobBaseName, workflowPath, inputsPath, dependenciesPath);
             core.setOutput('workflowId', clientWorkflowId);
@@ -72,6 +78,9 @@ async function runAsync() {
                 throw new Error(msg);
             }
             await monitor.runAsync(containerClient, clientWorkflowId);
+        } else if (subcommand === 'metadata') {
+            const clientWorkflowId = core.getInput("workflow_id");
+            await metadata.downloadAsync(clientWorkflowId + ".json", clientWorkflowId, metadataContainerClient);
         } else {
             throw new Error(`Unknown subcommand: ${subcommand}`);
         }

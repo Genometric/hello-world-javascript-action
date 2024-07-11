@@ -18,6 +18,10 @@ inputs:
     description: todo
     required: false
     default: 'new'
+  azure_storage_metadata_container_name:
+    description: todo
+    required: false
+    default: 'outputs'
   workflow_path:
     description: todo
     required: true
