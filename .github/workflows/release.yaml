@@ -72,13 +72,25 @@ jobs:
           echo "DEV_TAG=$DEV_TAG" >> $GITHUB_OUTPUT
           echo "RELEASE_TAG=$RELEASE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Publish Dev Tag
-        if: github.ref == 'refs/heads/dev'
+      - name: Commit compiled version
+        id: commit
         run: |
-          BRANCH="dev-nightly-release"
+          if [ ${{ github.ref }} == "refs/heads/dev" ]; then
+            BRANCH="dev-nightly-release"
+          else
+            BRANCH="main"
+          fi
+          
           git switch -C $BRANCH
           git add --force dist/*
           git commit -m "Add compiled js file [Invoker ${{ steps.tags.outputs.SHA }}]."
+          
+          echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Publish Dev Tag
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          BRANCH=${{ steps.commit.outputs.BRANCH }}
           git tag -a -m ${{ steps.tags.outputs.DEV_TAG }} ${{ steps.tags.outputs.DEV_TAG }}
           git push --set-upstream origin $BRANCH --force --follow-tags
 
