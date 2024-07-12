@@ -31,13 +31,24 @@ jobs:
           npm i -g @vercel/ncc
           ncc build index.js --license licenses.txt
 
+      - name: Release needed
+        id: needs_release
+        run: |
+          if [ -n "$(git status --porcelain dist)" ]; then
+            echo "NR=true" >> $GITHUB_OUTPUT
+          else
+            echo "NR=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Configure git
+        if: steps.needs_release.NR == true
         run : |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Compose Release Tag
         id: tags
+        if: steps.needs_release.NR == true
         run: |          
           TIMESTAMP=$(git show -s --format=%at $SHA)
           DEV_TAG=dev-$TIMESTAMP
@@ -64,6 +75,7 @@ jobs:
 
       - name: Commit compiled version
         id: commit
+        if: steps.needs_release.NR == true
         run: |
           if [ ${{ github.ref }} == "refs/heads/main" ]; then
             BRANCH="main"
@@ -79,14 +91,14 @@ jobs:
           git commit -m "Add compiled js file [Invoker ${{ steps.tags.outputs.SHA }}]."
 
       - name: Publish Dev Tag
-        if: github.ref == 'refs/heads/dev'
+        if: github.ref == 'refs/heads/dev' && steps.needs_release.NR == true
         run: |
           BRANCH=${{ env.NIGHTLY-BRANCH }}
           git tag -a -m ${{ steps.tags.outputs.DEV_TAG }} ${{ steps.tags.outputs.DEV_TAG }}
           git push --set-upstream origin $BRANCH --force --follow-tags
 
       - name: Release
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && steps.needs_release.NR == true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
