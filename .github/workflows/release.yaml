@@ -6,6 +6,9 @@ on:
       - main
       - dev
 
+env:
+  NIGHTLY-BRANCH: "dev-nightly-release"
+
 jobs:
   release:
     runs-on: ubuntu-22.04
@@ -62,28 +65,28 @@ jobs:
       - name: Commit compiled version
         id: commit
         run: |
-          if [ ${{ github.ref }} == "refs/heads/dev" ]; then
-            BRANCH="dev-nightly-release"
-          else
+          if [ ${{ github.ref }} == "refs/heads/main" ]; then
             BRANCH="main"
+          elif [ ${{ github.ref }} == "refs/heads/dev" ]; then
+            BRANCH=${{ env.NIGHTLY-BRANCH }}
+          else
+            echo "Unsupported branch."
+            exit 1
           fi
           
           git switch -C $BRANCH
           git add --force dist/*
           git commit -m "Add compiled js file [Invoker ${{ steps.tags.outputs.SHA }}]."
-          
-          echo "BRANCH=$BRANCH" >> $GITHUB_OUTPUT
 
       - name: Publish Dev Tag
         if: github.ref == 'refs/heads/dev'
         run: |
-          BRANCH=${{ steps.commit.outputs.BRANCH }}
+          BRANCH=${{ env.NIGHTLY-BRANCH }}
           git tag -a -m ${{ steps.tags.outputs.DEV_TAG }} ${{ steps.tags.outputs.DEV_TAG }}
           git push --set-upstream origin $BRANCH --force --follow-tags
 
       - name: Release
         if: github.ref == 'refs/heads/main'
-        id: release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
