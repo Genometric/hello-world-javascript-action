@@ -124,3 +124,24 @@ AZURE_STORAGE_CONTAINER_NAME
 AZURE_STORAGE_INPUTS_CONTAINER_NAME
 AZURE_STORAGE_BLOB_NAME
 ```
+
+# Release
+
+
+1. compile:
+```shell
+ncc build index.js --license licenses.txt
+```
+
+2. git commit push:
+
+3. git tag:
+
+```shell
+git tag -a -m "update" v1.12
+```
+
+4. push tag:
+
+```shell
+git push --follow-tags 
